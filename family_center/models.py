@@ -10,7 +10,7 @@ class User(models.Model):
 
 class Family(models.Model):
 	name = models.CharField(max_length=256)
-	admin = models.CharField(mac_length=32)
+	admin = models.CharField(max_length=32)
 	created_at = models.DateTimeField(auto_now_add=True)
 
 class FamilyUserMapping(models.Model):
@@ -19,7 +19,7 @@ class FamilyUserMapping(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True)
 
 class Period(models.Model):
-	name = models.CharField(mac_length=32)
+	name = models.CharField(max_length=32)
 	total = models.IntegerField()
 
 class PeriodFUMapping(models.Model):
