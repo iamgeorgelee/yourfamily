@@ -16,9 +16,10 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
-from family_center.api import webhook
+from family_center.urls import urlpatterns as center_urlpatterns
 
 urlpatterns = [
 	url(r'^yourfamily/admin/', admin.site.urls),
-	url(r'^yourfamily/center/', webhook),
 ]
+
+urlpatterns += center_urlpatterns
