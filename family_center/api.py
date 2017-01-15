@@ -6,6 +6,7 @@ from rest_framework.decorators import detail_route
 from rest_framework.decorators import list_route
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
+from rest_framework import permissions
 
 MY_TOKEN = 'my_token'
 
@@ -15,20 +16,20 @@ def webhook(request):
 
 
 class FBWebhookViewSet(viewsets.ViewSet):
+	
+	permission_classes = (permissions.AllowAny,)
 
-	@detail_route(methods=['get'], url_path='webhook')
+	@list_route(methods=['get', 'post'], url_path='webhook')
 	def verify_webbhook(self, request):
-		q_param = request.query_params
-		if q_param.get('hub.mode') == 'subscribe' and q_param.get('hub.verify_token') == MY_TOKEN:
-			return Response(q_param.get('hub.challenge'), status=status.HTTP_200_OK)
-		else
-			return Response('error', status=status.HTTP_403_OK)
-		
-
-	@detail_route(methods=['post'], url_path='webhook')
-	def webhook(self, request):
-		data = dict(request.data.iteritems())
-		if not data.get('end_date'):
-			data['end_date'] = None
-
-		return Response(serializer.data, status=status.HTTP_201_CREATED)
+		if request.method == 'GET':
+			q_param = request.query_params
+			if q_param.get('hub.mode') == 'subscribe' and q_param.get('hub.verify_token') == MY_TOKEN:
+				challenge = q_param.get('hub.challenge')
+				print challenge 
+				return Response(int(challenge), status=status.HTTP_200_OK)
+			else:
+				return Response('error', status=status.HTTP_403_FORBIDDEN)
+		else: # POST
+			data = dict(request.data.iteritems())
+                	print data
+                	return Response(status=status.HTTP_200_OK)
