@@ -4,28 +4,23 @@ from django.db import models
 
 
 class User(models.Model):
-	name = models.CharField(max_length=256)
-	facebook_id = models.CharField(max_length=32)
+	name = models.CharField(max_length=256, null=True, blank=True)
+	facebook_id = models.CharField(max_length=32, unique=True)
 	created_at = models.DateTimeField(auto_now_add=True)
+	state = models.PositiveIntegerField(default=0)
 
 class Family(models.Model):
 	name = models.CharField(max_length=256)
-	admin = models.CharField(max_length=32)
+	admin = models.ForeignKey(User, related_name='family')
 	created_at = models.DateTimeField(auto_now_add=True)
 
 class FamilyUserMapping(models.Model):
-	family_id = models.PositiveIntegerField()
-	user_id = models.PositiveIntegerField()
+	family = models.ForeignKey(Family, related_name='fu')
+	user = models.ForeignKey(User, related_name='fu')
 	created_at = models.DateTimeField(auto_now_add=True)
 
-class Period(models.Model):
-	family = models.ForeignKey(Family, related_name='family')
-	name = models.CharField(max_length=32)
-	total = models.IntegerField()
-
-class PeriodFUMapping(models.Model):
+class Bill(models.Model):
 	fum = models.ForeignKey(FamilyUserMapping, related_name='pfu')
-	period = models.ForeignKey(Period, related_name='pfu')
-	name = models.CharField(max_length=32)
-	amount = models.IntegerField()
+	period = models.CharField(max_length=256)
+	amount = models.FloatField()
 
