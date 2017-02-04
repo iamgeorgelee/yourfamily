@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+import logging
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -130,3 +131,14 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ]
 }
+
+FB_PAGE_ACCESS_TOKEN = 'whatever'
+
+# local setting for development.
+try:
+	from .local_settings import * 
+	print FB_PAGE_ACCESS_TOKEN
+	logging.info("Success! absolute_import worked")
+except ImportError as e:
+	logging.info("Caught absolute_import ImportError: %s" % e)
+

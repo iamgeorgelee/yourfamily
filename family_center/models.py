@@ -19,6 +19,7 @@ class FamilyUserMapping(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True)
 
 class Period(models.Model):
+	family = models.ForeignKey(Family, related_name='family')
 	name = models.CharField(max_length=32)
 	total = models.IntegerField()
 
