@@ -1,7 +1,7 @@
 from .models import User, Family, FamilyUserMapping, Bill
 	
 
-class UserRepo(Object):
+class UserRepo(object):
 	def create(self, name, fb_id):
 		return User.objects.create(
 			name=name,
@@ -11,9 +11,9 @@ class UserRepo(Object):
 
 	def get_or_create(self, fb_id):
 
-		if User.objects.filter(facebook_id=fb_id).exist():
+		if User.objects.filter(facebook_id=fb_id).count() > 0:
 			return User.objects.get(facebook_id=fb_id)
-		else 
+		else: 
 			return self.create('', fb_id)
 
 	def set_state(self, fb_id, state):
@@ -30,7 +30,7 @@ class UserRepo(Object):
 		return user
 
 
-class FamilyRepo(Object):
+class FamilyRepo(object):
 
 	def create(self, name, admin_id):
 		return Family.objects.create(
@@ -38,7 +38,7 @@ class FamilyRepo(Object):
 			admin=admin_id,
 		)
 
-class FURepo(Object):
+class FURepo(object):
 
 	def link(self, family_id, user_id):
 		return FamilyUserMapping.objects.create(
@@ -46,7 +46,7 @@ class FURepo(Object):
 			user=user_id,
 		)
 
-class BillingRepo(Object):
+class BillingRepo(object):
 
 	def create_period_bill(self, family_bills):
 		

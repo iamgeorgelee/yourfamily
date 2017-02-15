@@ -59,7 +59,7 @@ class FBWebhookViewSet(viewsets.ViewSet):
 
 			sender_id = event.get('sender').get('id')
 			text = message.get('text')
-			user = get_or_create(sender_id)
+			user = user_service.get_or_create(sender_id)
 			user_state = user.state
 			reply = 'I do not understand'
 			if self.contains_ignore_case('sign up', text) and user_state < 5:

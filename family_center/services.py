@@ -9,7 +9,7 @@ family_repo = FamilyRepo()
 fu_repo = FURepo()
 billing_repo = BillingRepo()
 
-class UserService(Object):
+class UserService(object):
 
 	def create(self, name, fb_id):
 		return user_repo.create(name, fb_id)
@@ -21,22 +21,22 @@ class UserService(Object):
 		return self.get_or_create(fb_id).state
 
 	def set_state_by_fb(self, fb_id, state):
-		reuturn user_repo.set_state(fb_id, state)
+		return user_repo.set_state(fb_id, state)
 
 	def update_by_fb(self, fb_id, name, state):
-		reuturn user_repo.update_by_fb(fb_id, name, state)
+		return user_repo.update_by_fb(fb_id, name, state)
 
-class FamilyService(Object):
+class FamilyService(object):
 
 	def create(self, name, admin_id):
 		return family_repo.create(name, admin_id)
 
-class FUService(Object):
+class FUService(object):
 
 	def link(self, family_id, user_id):
 		return fu_repo.link(family_id, user_id)
 
-class BillingService(Object):
+class BillingService(object):
 
 	def create_period_bill(self, family_bills):
 		return billing_repo.create_period_bill(family_bills)

@@ -15,12 +15,12 @@ class Family(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True)
 
 class FamilyUserMapping(models.Model):
-	family = models.ForeignKey(Family, related_name='fu')
-	user = models.ForeignKey(User, related_name='fu')
+	family = models.ForeignKey(Family, related_name='fu', null=True)
+	user = models.ForeignKey(User, related_name='fu', null=True)
 	created_at = models.DateTimeField(auto_now_add=True)
 
 class Bill(models.Model):
-	fum = models.ForeignKey(FamilyUserMapping, related_name='pfu')
+	fum = models.ForeignKey(FamilyUserMapping, related_name='pfu', null=True)
 	period = models.CharField(max_length=256)
 	amount = models.FloatField()
 
