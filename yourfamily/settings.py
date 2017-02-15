@@ -151,6 +151,12 @@ REST_FRAMEWORK = {
 }
 
 FB_PAGE_ACCESS_TOKEN = 'whatever'
+SOCIAL_AUTH_GITHUB_KEY = 'whatever'
+SOCIAL_AUTH_GITHUB_SECRET = 'whatever'
+SOCIAL_AUTH_TWITTER_KEY = 'whatever'
+SOCIAL_AUTH_TWITTER_SECRET = 'whatever'
+SOCIAL_AUTH_FACEBOOK_KEY = 'whatever'  # App ID
+SOCIAL_AUTH_FACEBOOK_SECRET = 'whatever'  # App Secret
 
 # local setting for development.
 try:

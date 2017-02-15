@@ -10,7 +10,8 @@ router.register(r'fb', FBWebhookViewSet, base_name='fb')
 urlpatterns = [
 	url(r'^center/', include(router.urls)),
 
-	url(r'^$', core_views.home, name='home'),
+	url(r'^$', family_center_views.home, name='home'),
     url(r'^login/$', auth_views.login, name='login'),
     url(r'^logout/$', auth_views.logout, name='logout'),
 ]
+git 
