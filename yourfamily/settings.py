@@ -34,13 +34,13 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+	'family_center',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'family_center',
     'rest_framework',
     'social_django',
 ]
@@ -159,11 +159,25 @@ SOCIAL_AUTH_TWITTER_KEY = 'whatever'
 SOCIAL_AUTH_TWITTER_SECRET = 'whatever'
 SOCIAL_AUTH_FACEBOOK_KEY = 'whatever'  # App ID
 SOCIAL_AUTH_FACEBOOK_SECRET = 'whatever'  # App Secret
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+
+
+SOCIAL_AUTH_PIPELINE = (
+	'social_core.pipeline.social_auth.social_details',
+	'social_core.pipeline.social_auth.social_uid',
+	'social_core.pipeline.social_auth.auth_allowed',
+	'social_core.pipeline.social_auth.social_user',
+	'social_core.pipeline.social_auth.associate_by_email',
+	'social_core.pipeline.user.get_username',
+	'social_core.pipeline.user.create_user',
+	'social_core.pipeline.social_auth.associate_user',
+	'social_core.pipeline.social_auth.load_extra_data',
+	'social_core.pipeline.user.user_details',
+)
 
 # local setting for development.
 try:
 	from .local_settings import * 
-	print FB_PAGE_ACCESS_TOKEN
 	logging.info("Success! absolute_import worked")
 except ImportError as e:
 	logging.info("Caught absolute_import ImportError: %s" % e)

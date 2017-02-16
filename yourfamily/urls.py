@@ -20,7 +20,6 @@ from family_center.urls import urlpatterns as center_urlpatterns
 
 urlpatterns = [
 	url(r'^admin/', admin.site.urls),
-	url(r'^oauth/', include('social.apps.django_app.urls', namespace='social')),  # <--
 ]
 
 urlpatterns += center_urlpatterns

@@ -27,7 +27,10 @@ def signup(request):
 
 @login_required
 def home(request):
-    return render(request, 'home/home.html')
+	print request.user
+	if request.user.is_authenticated():	
+		print request.user.email
+	return render(request, 'home/home.html')
 
 @login_required
 def settings(request):
