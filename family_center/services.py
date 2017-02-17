@@ -2,29 +2,24 @@ from django.conf import settings
 
 import facebook
 
-from .repos import UserRepo, FamilyRepo, FURepo, BillingRepo
+from .repos import MemberRepo, FamilyRepo, FURepo, BillingRepo
 
-user_repo = UserRepo()
+member_repo = MemberRepo()
 family_repo = FamilyRepo()
 fu_repo = FURepo()
 billing_repo = BillingRepo()
 
-class UserService(object):
+class MemberService(object):
 
-	def create(self, name, fb_id):
-		return user_repo.create(name, fb_id)
+	def get(self, member_id):
+		return member_repo.get(member_id)
 
-	def get_or_create(self, fb_id):
-		return user_repo.get_or_create(fb_id)
+	def set_state_by_fb(self, fb_messenger_id, state):
+		return member_repo.set_chat_state(fb_messenger_id, state)
 
-	def get_state_by_fb(self, fb_id):
-		return self.get_or_create(fb_id).state
+	def get_by_fb_messenger_id(self, fb_messenger_id):
+		return member_repo.get_by_fb_messenger_id(fb_messenger_id)
 
-	def set_state_by_fb(self, fb_id, state):
-		return user_repo.set_state(fb_id, state)
-
-	def update_by_fb(self, fb_id, name, state):
-		return user_repo.update_by_fb(fb_id, name, state)
 
 class FamilyService(object):
 

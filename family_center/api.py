@@ -13,13 +13,13 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework import permissions
 
-from .services import UserService
+from .services import MemberService
 
 MY_TOKEN = 'my_token'
 FB_POST_URL = 'https://graph.facebook.com/v2.6/me/messages'
 PAGE_ACCESS_TOKEN = settings.FB_PAGE_ACCESS_TOKEN
 
-user_service = UserService()
+member_service = MemberService()
 
 class FBWebhookViewSet(viewsets.ViewSet):
 	
@@ -59,28 +59,14 @@ class FBWebhookViewSet(viewsets.ViewSet):
 
 			sender_id = event.get('sender').get('id')
 			text = message.get('text')
-			user = user_service.get_or_create(sender_id)
-			user_state = user.state
-			reply = 'I do not understand'
-			if self.contains_ignore_case('sign up', text) and user_state < 5:
-				reply = 'ok, what is your name?'
-				user_service.set_state_by_fb(sender_id, 1)
-			elif user_state == 0:
-				reply = 'hello, please type "sign up" to begin'
-			elif user_state == 1:
-				reply = 'is {} your name? Say "yes" to confirm'.format(text)
-				user_service.update_by_fb(sender_id, text, 2)
-			elif user_state == 2:
-				if self.contains_ignore_case('yes', text):
-					reply = 'Cool, welcome {}'.format(user.name)
-					user_service.set_state_by_fb(sender_id, 3)
-				else:
-					reply = "Let's try it again, what is your name?"
-					user_service.set_state_by_fb(sender_id, 1)
+			member = member_service.get_by_fb_messenger_id(sender_id)
+			
+			if member:
+				reply = 'I do not understand'
+				# state = member.chat_state
+				self.send_text_message(sender_id, reply)
 			else:
-				pass
-
-			self.send_text_message(sender_id, reply)
+				self.send_login_message(sender_id)	
 
 	def contains_ignore_case(self, substring, original_string):
 		return substring.upper() in original_string.upper()
@@ -91,7 +77,16 @@ class FBWebhookViewSet(viewsets.ViewSet):
 		message = {'text': message_text}
 		message_data['recipient'] = recipient
 		message_data['message'] = message
-		print message_data
+		self.call_send_api(message_data)
+
+	def send_login_message(self, recipient_id):
+		message_data = {}
+		recipient = {'id': recipient_id}
+		message = {'text': 'Please sign up first'}
+		buttons = [{"type": "account_link", "url": "https://iamgeorgelee.com/yourfamily"}]
+		message_data['recipient'] = recipient
+		message_data['message'] = message
+		message_data['buttons'] = buttons
 		self.call_send_api(message_data)
 
 	def call_send_api(self, message_data):

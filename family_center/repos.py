@@ -1,34 +1,24 @@
-from .models import User, Family, FamilyUserMapping, Bill
+from .models import Member, Family, FamilyUserMapping, Bill
 	
 
-class UserRepo(object):
-	def create(self, name, fb_id):
-		return User.objects.create(
-			name=name,
-			facebook_id=fb_id,
-			state=0
-		)
+class MemberRepo(object):
 
-	def get_or_create(self, fb_id):
+	def get(self, member_id):
+		return Member.objects.get(member_id=member_id)
 
-		if User.objects.filter(facebook_id=fb_id).count() > 0:
-			return User.objects.get(facebook_id=fb_id)
-		else: 
-			return self.create('', fb_id)
+	def get_by_fb_messenger_id(self, fb_messenger_id):
+		try:
+			return Member.objects.get(fb_messenger_id=fb_messenger_id)
+		except Member.DoesNotExist:
+			return None
 
-	def set_state(self, fb_id, state):
-		user = User.objects.get(facebook_id=fb_id)
-		user.state = state
-		user.save()
-		return user
-
-	def update_by_fb(self, fb_id, name, state):
-		user = User.objects.get(facebook_id=fb_id)
-		user.name = name
-		user.state = state
-		user.save()
-		return user
-
+	def set_chat_state(self, fb_messenger_id, state):
+		member = self.get_by_fb_messenger_id(fb_messenger_id=fb_messenger_id)
+		if not member:
+			return None
+		member.state = state
+		member.save()
+		return member
 
 class FamilyRepo(object):
 
@@ -40,10 +30,10 @@ class FamilyRepo(object):
 
 class FURepo(object):
 
-	def link(self, family_id, user_id):
+	def link(self, family_id, member_id):
 		return FamilyUserMapping.objects.create(
 			family=family_id,
-			user=user_id,
+			member=member_id,
 		)
 
 class BillingRepo(object):
