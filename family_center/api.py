@@ -82,11 +82,21 @@ class FBWebhookViewSet(viewsets.ViewSet):
 	def send_login_message(self, recipient_id):
 		message_data = {}
 		recipient = {'id': recipient_id}
-		message = {'text': 'Please sign up first'}
-		buttons = [{"type": "account_link", "url": "https://iamgeorgelee.com/yourfamily"}]
+		message = {"attachment":{
+			"type":"template",
+ 			"payload":{
+ 				"template_type":"button",
+ 				"text":"Please sign up first",
+				"buttons":[
+				{
+					"type":"account_link",
+					"url":"https://iamgeorgelee.com/yourfamily",
+				},
+        			]
+      			}
+    		}}
 		message_data['recipient'] = recipient
 		message_data['message'] = message
-		message_data['buttons'] = buttons
 		self.call_send_api(message_data)
 
 	def call_send_api(self, message_data):
