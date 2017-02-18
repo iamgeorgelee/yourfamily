@@ -1,6 +1,5 @@
 import requests
 import json
-import os
 
 from django.conf import settings
 from django.http import HttpResponse
@@ -88,10 +87,10 @@ class FBWebhookViewSet(viewsets.ViewSet):
  				"template_type":"button",
  				"text":"Please sign up first",
 				"buttons":[
-				{
-					"type":"account_link",
-					"url":"https://iamgeorgelee.com/yourfamily",
-				},
+						{
+							"type":"account_link",
+							"url":"https://iamgeorgelee.com/yourfamily/authorize_from_messenger",
+						},
         			]
       			}
     		}}
@@ -100,7 +99,6 @@ class FBWebhookViewSet(viewsets.ViewSet):
 		self.call_send_api(message_data)
 
 	def call_send_api(self, message_data):
-		print PAGE_ACCESS_TOKEN
 		qs = { 'access_token': PAGE_ACCESS_TOKEN }
 		res = requests.post(FB_POST_URL,json=message_data, params=qs)
 		if res.status_code == 200:

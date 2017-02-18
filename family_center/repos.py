@@ -6,6 +6,14 @@ class MemberRepo(object):
 	def get(self, member_id):
 		return Member.objects.get(member_id=member_id)
 
+	def set_fb_messenger_id(self, member_id, fb_messenger_id):
+		member = self.get(member_id=member_id)
+		if not member:
+			return None
+		member.fb_messenger_id = fb_messenger_id
+		member.save()
+		return member
+		
 	def get_by_fb_messenger_id(self, fb_messenger_id):
 		try:
 			return Member.objects.get(fb_messenger_id=fb_messenger_id)

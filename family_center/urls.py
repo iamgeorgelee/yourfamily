@@ -21,4 +21,5 @@ urlpatterns = [
 	url(r'^settings/$', home_views.settings, name='settings'),
 	url(r'^settings/password/$', home_views.password, name='password'),
 	url(r'^oauth/', include('social_django.urls', namespace='social')),
+	url(r'^authorize_from_messenger/$', home_views.authorize_from_messenger, name='authorize_from_messenger'),
 ]
