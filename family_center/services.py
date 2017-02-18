@@ -14,8 +14,8 @@ class MemberService(object):
 	def get(self, member_id):
 		return member_repo.get(member_id)
 
-	def set_fb_messenger_id(self, member_id, fb_messenger_id):
-		return member_repo.set_fb_messenger_id(member_id, fb_messenger_id)
+	def set_fb_messenger_id(self, user_id, fb_messenger_id):
+		return member_repo.set_fb_messenger_id(user_id, fb_messenger_id)
 
 	def set_state_by_fb(self, fb_messenger_id, state):
 		return member_repo.set_chat_state(fb_messenger_id, state)

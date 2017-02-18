@@ -92,15 +92,15 @@ def password(request):
 @login_required
 def authorize_from_messenger(request):
 
-	q_param = request.query_params
- 	redirect_url = q_param.get('redirect_uri')
-
+ 	redirect_url = request.GET.get('redirect_uri')
+	account_linking_token = request.GET.get('account_linking_token')
 	print request.user
 	if request.user.is_authenticated():	
 		psid = get_psid(account_linking_token)
 		if psid:
 			member_service.set_fb_messenger_id(request.user.id, psid)
 			redirect_url += '&authorization_code=' + AUTHORIZATION_CODE
+			print redirect_url
 
 	return redirect(redirect_url)
 
@@ -108,7 +108,7 @@ def get_psid(account_linking_token):
 	qs = { 'access_token': PAGE_ACCESS_TOKEN, 'fields': 'recipient', 'account_linking_token': account_linking_token }
 	res = requests.get('https://graph.facebook.com/v2.6/me', params=qs)
 	if res.status_code == 200:
-		payload = json.loads(res.json)
+		payload = json.loads(res.text)
 		return payload.get('recipient')
 	else:
 		print res.status_code
