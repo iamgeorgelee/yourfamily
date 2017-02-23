@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'social_django',
+	'social_django',
+	'webpack_loader',
 ]
 
 MIDDLEWARE = [
@@ -62,7 +63,7 @@ ROOT_URLCONF = 'yourfamily.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'family_center/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -140,7 +141,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/yourfamily/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'family_center/static'),
+]
+
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
@@ -176,6 +181,14 @@ SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
 #	'social_core.pipeline.social_auth.load_extra_data',
 #	'social_core.pipeline.user.user_details',
 #)
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'BUNDLE_DIR_NAME': 'bundles/local/',  # end with slash
+        'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats-local.json'),
+    }
+}
+
 
 # local setting for development.
 try:

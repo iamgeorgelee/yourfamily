@@ -109,3 +109,5 @@ supervisord.log
 *.sqlite3
 
 newenv
+family_center/static/
+
