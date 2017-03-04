@@ -1,4 +1,6 @@
-from .models import Member, Family, FamilyUserMapping, Bill
+from datetime import datetime
+
+from .models import Member, Family, FamilyUserMapping, FamilyBill, MemberBill
 	
 
 class MemberRepo(object):
@@ -33,36 +35,79 @@ class MemberRepo(object):
 
 class FamilyRepo(object):
 
-	def create(self, name, admin_id):
+	def create(self, name, plan_type, description=''):
 		return Family.objects.create(
 			name=name,
-			admin=admin_id,
+			plan_type=plan_type
+			description=description
 		)
 
-class FURepo(object):
-
-	def link(self, family_id, member_id):
+	def link_family_member(self, family_id, member_id, admin=False):
 		return FamilyUserMapping.objects.create(
 			family=family_id,
 			member=member_id,
+			admin=admin
 		)
 
-class BillingRepo(object):
+	def get(self, family_id):
+		return Family.objects.get(id=family_id)
 
-	def create_period_bill(self, family_bills):
-		
-		bills = list()
-		for bill in family_bills:
-			bill = Bill(
-				fum=bill.get('fum_id'),
-				period=bill.get('period'),
-				amount=bill.get('amount')
-			)
-			bills.append(bill)
-		Bill.objects.bulk_create(bills)
+	def get_familes_by_member(self, member_id):
+		return Family.objects.filter(FamilyUserMapping__member_id=member_id)
 
-	def get_latest_bill_family_detail(self, family_id):
-		return Bill.objects.filter(fum__family_id=family_id)
+
+class FamilyBillingRepo(object):
+
+	def create(self, family_id, detail):
+		return FamilyBill.objects.create(
+			family=family_id,
+			period_type=detail.get('period_type'),
+			total=detail.get('total'),
+			year=detail.get('year'),
+    		month=detail.get('month'),
+		)
+
+	def get(self, family_id)
+		return FamilyBill.objects.filter(family_id=family_id)
+
+	def get_last(self, family_id):
+		return self.get(family_id).last()
+
+	def get_last_with_member_detail(self, family_id):
+		return self.get_last(family_id).select_related()
 
 	def get_latest_bill_by_family_user(self, family_id, user_id):
 		return Bill.objects.filter(fum__user_id=user_id, fum__family_id=family_id)
+
+class MemberBillingRepo(object):
+
+	def bulk_create(self, family_bill, members_detail):
+
+		members_detail_objs = [(
+				member = detail.get(member_id),
+				family_bill = family_bill
+				amount = detail.get('amount'),
+				paid = detail.get('paid'),
+			) for detail in members_detail]
+
+		MemberBill.objects.bulk_create(members_detail_objs)	
+
+	def update_family_member_bill(self, family_bill_id, member_id, amount, paid):
+		bill_obj = MemberBill.objects.get(family_bill_id=family_bill_id, member_id=member_id)
+
+		if amount:
+			bill_obj.amount = amount
+
+		if paid != None:
+			bill_obj.paid = paid
+			bill_obj.paid_date = datetime.now() if paid else None
+
+		bill_obj.save()
+
+	def get_last(self, family_id, member_id):
+		return MemberBill.objects.get(family_bill__family_id=family_id, member_id=member_id)
+
+
+member_repo = MemberRepo()
+family_repo = FamilyRepo()
+billing_repo = BillingRepo()

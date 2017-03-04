@@ -2,12 +2,7 @@ from django.conf import settings
 
 import facebook
 
-from .repos import MemberRepo, FamilyRepo, FURepo, BillingRepo
-
-member_repo = MemberRepo()
-family_repo = FamilyRepo()
-fu_repo = FURepo()
-billing_repo = BillingRepo()
+from .repos import member_repo, family_repo, member_billing_repo, family_billing_repo
 
 class MemberService(object):
 
@@ -26,25 +21,47 @@ class MemberService(object):
 
 class FamilyService(object):
 
-	def create(self, name, admin_id):
-		return family_repo.create(name, admin_id)
+	def create(self, name, admin_id, plan_type):
+		return family_repo.create(name, admin_id, plan_type)
 
-class FUService(object):
+	def add_member(self, family_id, memeber_id):
+		return family_repo.link_family_member(family_id, memeber_id)
 
-	def link(self, family_id, user_id):
-		return fu_repo.link(family_id, user_id)
+	def get(self, family_id):
+		return family_repo.get(family_id)
+
+	def get_with_members(self, family_id):
+		return family_repo.get(family_id)
+
+	def get_familes_by_member(self, memeber_id)
+		return family_repo.get_familes_by_member(memeber_id)
+
 
 class BillingService(object):
 
-	def create_period_bill(self, family_bills):
-		return billing_repo.create_period_bill(family_bills)
+	def create(self, family_id, family_bill, members_detail):
+		family_bill_obj = billing_repo.create(family_id, family_bill)
+		if members_detail:
+			member_billing_repo.bulk_create(family_bill_obj.id, members_detail)
+		return family_bill_obj
 
-	def get_latest_bill_family_detail(self, family_id):
-		return billing_repo.get_latest_bill_family_detail(family_id)
+	def update_family_member_bill_amount(self, family_bill_id, member_id, amount):
+		return member_billing_repo.update_family_member_bill(family_bill_id, member_id, amount=amount)
 
-	def get_latest_bill_by_family_user(self, family_id, user_id):
-		return billing_repo.get_latest_bill_by_family_user(family_id, user_id)
+	def bill_paid(self, family_bill_id, member_id, paid=True):
+		return member_billing_repo.update_family_member_bill(family_bill_id, member_id, paid=paid)
 
+	def get_latest_bill_by_family(self, family_id):
+		return family_billing_repo.get_last(family_id)
+
+	def get_latest_bill_detail_by_family(self, family_id):
+		return family_billing_repo.get_last_with_member_detail(family_id)
+
+	def get_latest_bill_by_family_member(self, family_id, member_id)
+		return member_billing_repo.get_last(family_id, member_id)
+
+	def get_bills_by_family(self, family_id)
+		return family_billing_repo.get(family_id)
 
 # class FacebookService(Object):
 
