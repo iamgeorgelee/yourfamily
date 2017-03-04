@@ -38,8 +38,8 @@ class FamilyRepo(object):
 	def create(self, name, plan_type, description=''):
 		return Family.objects.create(
 			name=name,
-			plan_type=plan_type
-			description=description
+			plan_type=plan_type,
+			description=description,
 		)
 
 	def link_family_member(self, family_id, member_id, admin=False):
@@ -64,10 +64,10 @@ class FamilyBillingRepo(object):
 			period_type=detail.get('period_type'),
 			total=detail.get('total'),
 			year=detail.get('year'),
-    		month=detail.get('month'),
+   			month=detail.get('month'),
 		)
 
-	def get(self, family_id)
+	def get(self, family_id):
 		return FamilyBill.objects.filter(family_id=family_id)
 
 	def get_last(self, family_id):
@@ -83,14 +83,15 @@ class MemberBillingRepo(object):
 
 	def bulk_create(self, family_bill, members_detail):
 
-		members_detail_objs = [(
+		member_bills = [ 
+			MemberBill(
 				member = detail.get(member_id),
-				family_bill = family_bill
+				family_bill = family_bill,
 				amount = detail.get('amount'),
 				paid = detail.get('paid'),
 			) for detail in members_detail]
 
-		MemberBill.objects.bulk_create(members_detail_objs)	
+		MemberBill.objects.bulk_create(member_bills)	
 
 	def update_family_member_bill(self, family_bill_id, member_id, amount, paid):
 		bill_obj = MemberBill.objects.get(family_bill_id=family_bill_id, member_id=member_id)
@@ -110,4 +111,6 @@ class MemberBillingRepo(object):
 
 member_repo = MemberRepo()
 family_repo = FamilyRepo()
-billing_repo = BillingRepo()
+family_billing_repo = FamilyBillingRepo()
+member_billing_repo = MemberBillingRepo()
+

@@ -33,8 +33,8 @@ class FamilyService(object):
 	def get_with_members(self, family_id):
 		return family_repo.get(family_id)
 
-	def get_familes_by_member(self, memeber_id)
-		return family_repo.get_familes_by_member(memeber_id)
+	def get_familes_by_member(self, member_id):
+		return family_repo.get_familes_by_member(member_id)
 
 
 class BillingService(object):
@@ -57,10 +57,10 @@ class BillingService(object):
 	def get_latest_bill_detail_by_family(self, family_id):
 		return family_billing_repo.get_last_with_member_detail(family_id)
 
-	def get_latest_bill_by_family_member(self, family_id, member_id)
+	def get_latest_bill_by_family_member(self, family_id, member_id):
 		return member_billing_repo.get_last(family_id, member_id)
 
-	def get_bills_by_family(self, family_id)
+	def get_bills_by_family(self, family_id):
 		return family_billing_repo.get(family_id)
 
 # class FacebookService(Object):
