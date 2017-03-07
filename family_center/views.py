@@ -1,7 +1,5 @@
-import requests
 import json
 
-from django.conf import settings
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AdminPasswordChangeForm, PasswordChangeForm, UserCreationForm
@@ -11,12 +9,10 @@ from django.shortcuts import render, redirect
 
 from social.apps.django_app.default.models import UserSocialAuth
 
+from .chatbots import facebook_messenger
 from .services import MemberService
 member_service = MemberService()
 
-MY_TOKEN = 'my_token'
-PAGE_ACCESS_TOKEN = settings.FB_PAGE_ACCESS_TOKEN
-AUTHORIZATION_CODE = 'my_code'
 
 def hello_world(request):
     return HttpResponse("Hello World!")
@@ -96,21 +92,10 @@ def authorize_from_messenger(request):
 	account_linking_token = request.GET.get('account_linking_token')
 	print request.user
 	if request.user.is_authenticated():	
-		psid = get_psid(account_linking_token)
+		psid = facebook_messenger.get_psid(account_linking_token)
 		if psid:
 			member_service.set_fb_messenger_id(request.user.id, psid)
 			redirect_url += '&authorization_code=' + AUTHORIZATION_CODE
-			print redirect_url
+			member_service.send_text_message(psid, 'Your account has been linked!')
 
 	return redirect(redirect_url)
-
-def get_psid(account_linking_token):
-	qs = { 'access_token': PAGE_ACCESS_TOKEN, 'fields': 'recipient', 'account_linking_token': account_linking_token }
-	res = requests.get('https://graph.facebook.com/v2.6/me', params=qs)
-	if res.status_code == 200:
-		payload = json.loads(res.text)
-		return payload.get('recipient')
-	else:
-		print res.status_code
-		print res.text
-		return None
