@@ -1,3 +1,4 @@
 facebook-sdk
 python-social-auth[django]
 django-webpack-loader
+Fabric
