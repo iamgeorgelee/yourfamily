@@ -85,8 +85,13 @@ class FBWebhookViewSet(viewsets.ViewSet):
 			"type":"template",
  			"payload":{
  				"template_type":"button",
- 				"text":"Please sign up first",
+ 				"text":"Looks like you are new here! Please sign up with our website. If you already signed up, click log in to start chatting",
 				"buttons":[
+						{
+							"type":"web_url",
+							"url":"https://iamgeorgelee.com/yourfamily/login/",
+							"title":"Sign up"
+						},
 						{
 							"type":"account_link",
 							"url":"https://iamgeorgelee.com/yourfamily/authorize_from_messenger",
